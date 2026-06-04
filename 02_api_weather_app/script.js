@@ -2,12 +2,14 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const cityInput = document.getElementById("city-input");
     const weatherButton = document.getElementById("get-weather-btn");
     const weatherInfo = document.getElementById("weather-info");
+    const weatherClear = document.getElementById("weather-clear");
+    const weatherCloud = document.getElementById("weather-cloud");
     const cityName = document.getElementById("city-name");
     const temperature = document.getElementById("temperature");
     const description = document.getElementById("description");
 
     const error = document.getElementById("error-message");
-    const API_KEY = process.env.MY_SECRET_API_KEY;
+    const API_KEY = import.meta.env.VITE_MY_SECRET_API_KEY;
     weatherButton.addEventListener('click', async function(){
         let city = cityInput.value.trim();
         if(city ==="") return;
@@ -16,7 +18,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
         try{
             //server will take some time so function should have async await
             const weatherData = await fetchWeatherData(city);
-            // console.log("Weather data",weatherData); 
+            console.log("Weather data",weatherData); 
             displayWeatherData(weatherData);
         }
         catch(error){
@@ -28,6 +30,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
       //fetchWeatherData
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
       const response = await fetch(url);
+      //console.log("response",response);
       if (!response.ok) {
         throw new Error(`City not found`);
       }
@@ -45,12 +48,19 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
       //before diaplaying the content we need to remove the hidden class from weatherInfo
       weatherInfo.classList.remove("hidden");
-
       /*we need the name, temp and description
         we can get that by studying the data using the Inspect tool*/
-      cityName.textContent = `Name: ${data.name}`;
+      cityName.textContent = `City: ${data.name}`;
       temperature.textContent = `Temperature: ${data.main.temp}`;
       description.textContent = `Description: ${data.weather[0].description}`;
+      if (data.weather[0].description === "clear sky") {
+        weatherClear.classList.remove("hidden");
+        weatherCloud.classList.add("hidden");
+      } else {
+        weatherCloud.classList.remove("hidden");
+        weatherClear.classList.add("hidden");
+      }
+
     }
 
     function showError(){
