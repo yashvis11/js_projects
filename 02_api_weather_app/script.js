@@ -7,21 +7,25 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const cityName = document.getElementById("city-name");
     const temperature = document.getElementById("temperature");
     const description = document.getElementById("description");
+    const icon = document.getElementById("weather-icon");
 
     const error = document.getElementById("error-message");
     const API_KEY = import.meta.env.VITE_MY_SECRET_API_KEY;
     weatherButton.addEventListener('click', async function(){
         let city = cityInput.value.trim();
-        if(city ==="") return;
+        if(city === ""){
+          return;
+        }
         /*Notes on servers: 1. It may throw some error not necessarily respond immediately
         2. Server/database will be in another continent so it will take some time */
         try{
             //server will take some time so function should have async await
-            const weatherData = await fetchWeatherData(city);
+            const weatherData = await fetchWeatherData(city);//response in json received
             console.log("Weather data",weatherData); 
             displayWeatherData(weatherData);
         }
         catch(error){
+            console.log("The actual error is", error);
             showError();
         }
     })
@@ -29,8 +33,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
     async function fetchWeatherData(city){
       //fetchWeatherData
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`;
+      // const iconUrl = ` https://openweathermap.org/payload/api/media/file/10d@2x.png`;
+      // const iconResponse = await fetch(iconUrl);
       const response = await fetch(url);
-      //console.log("response",response);
       if (!response.ok) {
         throw new Error(`City not found`);
       }
@@ -38,7 +43,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
       arriving in packets. Using response.json the code tells the browser to keep downloading the weather
       packets and glue them together as json but as this takes time response.json() has await*/
       
-    const data = await response.json();
+    const data = await response.json();//response to json
     return data;
 
     }
@@ -53,14 +58,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
       cityName.textContent = `City: ${data.name}`;
       temperature.textContent = `Temperature: ${data.main.temp}`;
       description.textContent = `Description: ${data.weather[0].description}`;
-      if (data.weather[0].description === "clear sky") {
-        weatherClear.classList.remove("hidden");
-        weatherCloud.classList.add("hidden");
-      } else {
-        weatherCloud.classList.remove("hidden");
-        weatherClear.classList.add("hidden");
-      }
-
+      const iconCode = data.weather[0].icon;
+      icon.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+      icon.classList.remove(`hidden`);
     }
 
     function showError(){
