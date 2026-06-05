@@ -2,8 +2,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
     const cityInput = document.getElementById("city-input");
     const weatherButton = document.getElementById("get-weather-btn");
     const weatherInfo = document.getElementById("weather-info");
-    const weatherClear = document.getElementById("weather-clear");
-    const weatherCloud = document.getElementById("weather-cloud");
     const cityName = document.getElementById("city-name");
     const temperature = document.getElementById("temperature");
     const description = document.getElementById("description");
@@ -21,11 +19,11 @@ document.addEventListener("DOMContentLoaded", ()=>{
         try{
             //server will take some time so function should have async await
             const weatherData = await fetchWeatherData(city);//response in json received
-            console.log("Weather data",weatherData); 
+            //console.log("Weather data",weatherData); 
             displayWeatherData(weatherData);
         }
         catch(error){
-            console.log("The actual error is", error);
+            //console.log("The actual error is", error);
             showError();
         }
     })
