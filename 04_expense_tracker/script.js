@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   const totalAmount = document.getElementById("total-amount");
 
   let summation = 0;
+  let total=0; 
   let expenses=JSON.parse(localStorage.getItem('expenses'))|| [];
   expenses.forEach(e => {
     displayExpense(e);
@@ -38,8 +39,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     <span>Rs. ${expense.price}</span>
     <button>Delete</button>`;
     list.appendChild(li);
-    let total = calculateTotal(expense.price);
-    console.log("Total", total);
+    total = calculateTotal(expense.price);
     totalAmount.innerHTML = `${total}`;
 
     li.querySelector(`button`).addEventListener("click", () => {
@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded",()=>{
       saveData();
       //update the total to calculate the new price
       total = total - expense.price;
+      
       totalAmount.innerHTML = `${total}`;
     });
   }
@@ -57,7 +58,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   }
 
   function calculateTotal(price){
-    summation = summation+price;
-    return summation;
+    total = total+price;
+    return total;
   }
 })
